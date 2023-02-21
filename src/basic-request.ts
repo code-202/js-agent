@@ -139,7 +139,7 @@ export class BasicRequest implements Request {
         this.changeUploadProgression(0)
         this.changeStatus('pending')
 
-        return new Promise((resolve, reject) => {
+        const p = new Promise<Response>((resolve, reject) => {
             let url = this._settings.url
 
             for (const key in this._urlParams) {
@@ -153,39 +153,6 @@ export class BasicRequest implements Request {
                 return
             }
 
-            this._request.on('response', (response: superagent.Response) => {
-                this._responseStatus = response.status
-                this._responseTextStatus = response.text
-                this._responseData = response.body
-
-                this.changeProgression(100)
-                this.changeUploadProgression(100)
-
-                if (response.status === 204) {
-                    this._responseData = null
-                    this.changeStatus('done')
-                } else if ((response.status === 200 || response.status === 201) && this.transformResponseData(this._responseData)) {
-                    this.changeStatus('done')
-                } else {
-                    if (response.status !== 200 && response.status !== 201) {
-                        this.transformErrorResponseData(this._responseData)
-                    }
-                    this.changeStatus('error')
-                }
-
-                this._request = null
-
-                if (this._status === 'done') {
-                    resolve(this.buildResponse())
-                } else {
-                    if (this._responseStatus === 401 && this._authorizationService) {
-                        this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus)
-                    }
-
-                    reject(this.buildResponse())
-                }
-            })
-
             this._request.on('abort', () => {
                 if (!this._request) {
                     return
@@ -196,6 +163,8 @@ export class BasicRequest implements Request {
                 this.changeStatus('canceled')
 
                 this._request = null
+
+                this._responseTextStatus = 'aborted'
 
                 reject(this.buildResponse())
             })
@@ -221,33 +190,69 @@ export class BasicRequest implements Request {
 
             this._request.retry(2)
 
-            Agent.watchPromise(new Promise<void>((resolve, reject) => {
-                if (!this._request) {
-                    reject()
-                    return
-                }
+            this._request
+                .then((response: superagent.Response) => {
+                    this._responseStatus = response.status
+                    this._responseTextStatus = response.text
+                    this._responseData = response.body
 
-                this._request.end((err: any, res: superagent.Response) => {
-                    if (err) {
-                        reject()
-                    } else {
-                        resolve()
+                    this.changeProgression(100)
+                    this.changeUploadProgression(100)
+
+                    this._request = null
+
+                    if (response.status >= 300) {
+                        if (this._responseStatus === 401 && this._authorizationService) {
+                            this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus)
+                        }
+
+                        this.changeStatus('error')
+                        reject(this.buildResponse())
+
+                        return
                     }
+
+                    this.changeStatus('done')
+
+                    resolve(this.buildResponse())
+
+                    this.transformResponseData(response.body)
+                        .then((data: any) => {
+                            this._responseData = data
+
+                            resolve(this.buildResponse())
+                        })
+                        .catch((err: string) => {
+                            this.changeStatus('error')
+                            this._responseStatus = 500
+                            this._responseTextStatus = err
+                            reject(this.buildResponse())
+                        })
                 })
-            }))
+                .catch((err: any) => {
+                    this.changeStatus('error')
+
+                    this._responseStatus = err.status
+                    this._responseTextStatus = err.message
+                    this._responseData = null
+
+                    this._request = null
+
+                    reject(this.buildResponse())
+                })
         })
+
+        Agent.watchPromise(p)
+
+        return p
     }
 
     protected transformRequestData (data?: any): any {
         return data !== undefined ? data : null
     }
 
-    protected transformResponseData (data: any): boolean {
-        return true
-    }
-
-    protected transformErrorResponseData (data: string): boolean {
-        return this.transformResponseData(data)
+    protected transformResponseData (data: any): Promise<any> {
+        return new Promise<any>((resolve) => resolve(data))
     }
 
     protected buildResponse (): Response {

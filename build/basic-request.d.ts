@@ -41,8 +41,7 @@ export declare class BasicRequest implements Request {
     abort(): this;
     send(data?: any): Promise<Response>;
     protected transformRequestData(data?: any): any;
-    protected transformResponseData(data: any): boolean;
-    protected transformErrorResponseData(data: string): boolean;
+    protected transformResponseData(data: any): Promise<any>;
     protected buildResponse(): Response;
     protected changeProgression(progress: number): void;
     protected changeUploadProgression(progress: number): void;

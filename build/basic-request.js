@@ -120,7 +120,7 @@ class BasicRequest {
         this.changeProgression(0);
         this.changeUploadProgression(0);
         this.changeStatus('pending');
-        return new Promise((resolve, reject) => {
+        const p = new Promise((resolve, reject) => {
             let url = this._settings.url;
             for (const key in this._urlParams) {
                 url = url.replace('{' + key + '}', this._urlParams[key]);
@@ -130,36 +130,6 @@ class BasicRequest {
                 reject();
                 return;
             }
-            this._request.on('response', (response) => {
-                this._responseStatus = response.status;
-                this._responseTextStatus = response.text;
-                this._responseData = response.body;
-                this.changeProgression(100);
-                this.changeUploadProgression(100);
-                if (response.status === 204) {
-                    this._responseData = null;
-                    this.changeStatus('done');
-                }
-                else if ((response.status === 200 || response.status === 201) && this.transformResponseData(this._responseData)) {
-                    this.changeStatus('done');
-                }
-                else {
-                    if (response.status !== 200 && response.status !== 201) {
-                        this.transformErrorResponseData(this._responseData);
-                    }
-                    this.changeStatus('error');
-                }
-                this._request = null;
-                if (this._status === 'done') {
-                    resolve(this.buildResponse());
-                }
-                else {
-                    if (this._responseStatus === 401 && this._authorizationService) {
-                        this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
-                    }
-                    reject(this.buildResponse());
-                }
-            });
             this._request.on('abort', () => {
                 if (!this._request) {
                     return;
@@ -186,30 +156,51 @@ class BasicRequest {
             }
             this._request.send(this.transformRequestData(this._settings.data));
             this._request.retry(2);
-            agent_1.Agent.watchPromise(new Promise((resolve, reject) => {
-                if (!this._request) {
-                    reject();
+            this._request
+                .then((response) => {
+                this._responseStatus = response.status;
+                this._responseTextStatus = response.text;
+                this._responseData = response.body;
+                console.log(response.status);
+                this.changeProgression(100);
+                this.changeUploadProgression(100);
+                this._request = null;
+                if (response.status >= 300) {
+                    if (this._responseStatus === 401 && this._authorizationService) {
+                        this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
+                    }
+                    this.changeStatus('error');
+                    reject(this.buildResponse());
                     return;
                 }
-                this._request.end((err, res) => {
-                    if (err) {
-                        reject();
-                    }
-                    else {
-                        resolve();
-                    }
+                this.changeStatus('done');
+                this.transformResponseData(response.body)
+                    .then((data) => {
+                    this._responseData = data;
+                    resolve(this.buildResponse());
+                })
+                    .catch((err) => {
+                    this.changeStatus('error');
+                    this._responseStatus = 500;
+                    this._responseTextStatus = err;
+                    reject(this.buildResponse());
                 });
-            }));
+            })
+                .catch((err) => {
+                this.changeStatus('error');
+                console.log(err.message);
+                this._request = null;
+                reject(this.buildResponse());
+            });
         });
+        agent_1.Agent.watchPromise(p);
+        return p;
     }
     transformRequestData(data) {
         return data !== undefined ? data : null;
     }
     transformResponseData(data) {
-        return true;
-    }
-    transformErrorResponseData(data) {
-        return this.transformResponseData(data);
+        return new Promise((resolve) => resolve(data));
     }
     buildResponse() {
         return {
