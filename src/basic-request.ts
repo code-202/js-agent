@@ -214,8 +214,6 @@ export class BasicRequest implements Request {
 
                     this.changeStatus('done')
 
-                    resolve(this.buildResponse())
-
                     this.transformResponseData(response.body)
                         .then((data: any) => {
                             this._responseData = data

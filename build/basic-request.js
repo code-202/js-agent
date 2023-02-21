@@ -174,7 +174,6 @@ class BasicRequest {
                     return;
                 }
                 this.changeStatus('done');
-                resolve(this.buildResponse());
                 this.transformResponseData(response.body)
                     .then((data) => {
                     this._responseData = data;
