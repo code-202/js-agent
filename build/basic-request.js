@@ -138,6 +138,7 @@ class BasicRequest {
                 this.changeUploadProgression(100);
                 this.changeStatus('canceled');
                 this._request = null;
+                this._responseTextStatus = 'aborted';
                 reject(this.buildResponse());
             });
             this._request.on('progress', (event) => {
@@ -161,7 +162,6 @@ class BasicRequest {
                 this._responseStatus = response.status;
                 this._responseTextStatus = response.text;
                 this._responseData = response.body;
-                console.log(response.status);
                 this.changeProgression(100);
                 this.changeUploadProgression(100);
                 this._request = null;
@@ -174,6 +174,7 @@ class BasicRequest {
                     return;
                 }
                 this.changeStatus('done');
+                resolve(this.buildResponse());
                 this.transformResponseData(response.body)
                     .then((data) => {
                     this._responseData = data;
@@ -188,7 +189,9 @@ class BasicRequest {
             })
                 .catch((err) => {
                 this.changeStatus('error');
-                console.log(err.message);
+                this._responseStatus = err.status;
+                this._responseTextStatus = err.message;
+                this._responseData = null;
                 this._request = null;
                 reject(this.buildResponse());
             });

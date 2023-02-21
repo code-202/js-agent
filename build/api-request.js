@@ -8,20 +8,5 @@ class ApiRequest extends basic_request_1.BasicRequest {
         this.addHeader('Content-Type', 'application/json');
         this.addHeader('accept', 'json');
     }
-    transformRequestData(data) {
-        return JSON.stringify(data);
-    }
-    transformResponseData(data) {
-        return new Promise((resolve, reject) => {
-            try {
-                if (typeof data === 'string') {
-                    resolve(JSON.parse(data));
-                }
-            }
-            catch (e) {
-                reject('json_parse_error');
-            }
-        });
-    }
 }
 exports.ApiRequest = ApiRequest;
