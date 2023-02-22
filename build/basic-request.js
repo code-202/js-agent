@@ -136,9 +136,9 @@ class BasicRequest {
                 }
                 this.changeProgression(100);
                 this.changeUploadProgression(100);
-                this.changeStatus('canceled');
                 this._request = null;
                 this._responseTextStatus = 'aborted';
+                this.changeStatus('canceled');
                 reject(this.buildResponse());
             });
             this._request.on('progress', (event) => {
@@ -173,25 +173,28 @@ class BasicRequest {
                     reject(this.buildResponse());
                     return;
                 }
-                this.changeStatus('done');
                 this.transformResponseData(response.body)
                     .then((data) => {
                     this._responseData = data;
+                    this.changeStatus('done');
                     resolve(this.buildResponse());
                 })
                     .catch((err) => {
-                    this.changeStatus('error');
                     this._responseStatus = 500;
                     this._responseTextStatus = err;
+                    this.changeStatus('error');
                     reject(this.buildResponse());
                 });
             })
                 .catch((err) => {
-                this.changeStatus('error');
                 this._responseStatus = err.status;
                 this._responseTextStatus = err.message;
                 this._responseData = null;
+                if (typeof err.response !== 'undefined') {
+                    this._responseData = err.response.body;
+                }
                 this._request = null;
+                this.changeStatus('error');
                 reject(this.buildResponse());
             });
         });
