@@ -1,6 +1,6 @@
 {
   "name": "rich-agent",
-  "version": "3.1.1",
+  "version": "3.2.1",
   "main": "build/index.js",
   "typings": "build/index",
   "repository": "git@github.com:code-202/js-agent.git",

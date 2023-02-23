@@ -26,4 +26,6 @@ export interface Request extends RequestInformations {
     addHeader(key: string, value: string): this;
     addAuthorization(token: string, prefix: string): this;
     addAuthorizationService(service: AuthorizationService | null): this;
+    serialize(): Record<string, any>;
+    deserialize(data: Record<string, any>): void;
 }

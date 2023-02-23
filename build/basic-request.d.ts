@@ -46,4 +46,6 @@ export declare class BasicRequest implements Request {
     protected changeProgression(progress: number): void;
     protected changeUploadProgression(progress: number): void;
     protected changeStatus(status: Status): void;
+    serialize(): Record<string, any>;
+    deserialize(data: Record<string, any>): void;
 }

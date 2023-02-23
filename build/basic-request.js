@@ -241,5 +241,28 @@ class BasicRequest {
             listener(status);
         }
     }
+    serialize() {
+        return {
+            status: this._status,
+            responseStatus: this._responseStatus,
+            responseTextStatus: this._responseTextStatus,
+            responseData: this._responseData,
+            progress: this._progress,
+            uploadProgress: this._uploadProgress,
+        };
+    }
+    deserialize(data) {
+        try {
+            this._status = data.status;
+            this._responseStatus = data.responseStatus;
+            this._responseTextStatus = data.responseTextStatus;
+            this._responseData = data.responseData;
+            this._progress = data.progress;
+            this._uploadProgress = data.uploadProgress;
+        }
+        catch (e) {
+            console.error('Impossible to deserialize : bad data');
+        }
+    }
 }
 exports.BasicRequest = BasicRequest;
