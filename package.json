@@ -1,5 +1,5 @@
 {
-  "name": "rich-agent",
+  "name": "@code-202/agent",
   "version": "3.2.1",
   "main": "build/index.js",
   "typings": "build/index",
