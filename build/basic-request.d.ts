@@ -1,4 +1,4 @@
-import { Request, Method, Status, ProgressListener, StatusListener, AuthorizationService } from './request';
+import { Request, Method, Status, ProgressListener, StatusListener, AuthorizationService, RequestNormalized } from './request';
 import { Response } from './response';
 export interface Settings {
     url: string;
@@ -46,6 +46,6 @@ export declare class BasicRequest implements Request {
     protected changeProgression(progress: number): void;
     protected changeUploadProgression(progress: number): void;
     protected changeStatus(status: Status): void;
-    serialize(): Record<string, any>;
-    deserialize(data: Record<string, any>): void;
+    normalize(): RequestNormalized;
+    denormalize(data: RequestNormalized): any;
 }

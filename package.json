@@ -1,6 +1,6 @@
 {
   "name": "@code-202/agent",
-  "version": "3.2.1",
+  "version": "4.0.0",
   "main": "build/index.js",
   "typings": "build/index",
   "repository": "git@github.com:code-202/js-agent.git",
@@ -29,6 +29,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "@code-202/serializer": "^1.0.0",
     "superagent": "^8.0.9"
   }
 }

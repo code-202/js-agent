@@ -241,7 +241,7 @@ class BasicRequest {
             listener(status);
         }
     }
-    serialize() {
+    normalize() {
         return {
             status: this._status,
             responseStatus: this._responseStatus,
@@ -251,7 +251,7 @@ class BasicRequest {
             uploadProgress: this._uploadProgress,
         };
     }
-    deserialize(data) {
+    denormalize(data) {
         try {
             this._status = data.status;
             this._responseStatus = data.responseStatus;

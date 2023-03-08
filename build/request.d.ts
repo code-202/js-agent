@@ -1,4 +1,5 @@
 import { Response } from './response';
+import { Normalizable, Denormalizable } from '@code-202/serializer';
 export type Status = 'waiting' | 'pending' | 'done' | 'error' | 'canceled';
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type ProgressListener = (progress: number, direction: 'up' | 'down') => void;
@@ -14,7 +15,7 @@ export interface AuthorizationService {
     readonly authorizationPrefix: string;
     onAuthorizationError: (responseStatus: any | null, responseTextStatus: any | null) => void;
 }
-export interface Request extends RequestInformations {
+export interface Request extends RequestInformations, Normalizable<RequestNormalized>, Denormalizable<RequestNormalized> {
     readonly responseData: any | null;
     readonly responseStatus: any | null;
     readonly responseTextStatus: any | null;
@@ -26,6 +27,12 @@ export interface Request extends RequestInformations {
     addHeader(key: string, value: string): this;
     addAuthorization(token: string, prefix: string): this;
     addAuthorizationService(service: AuthorizationService | null): this;
-    serialize(): Record<string, any>;
-    deserialize(data: Record<string, any>): void;
+}
+export interface RequestNormalized {
+    status: Status;
+    responseStatus: number | null;
+    responseTextStatus: any;
+    responseData: any | null;
+    progress: number;
+    uploadProgress: number;
 }

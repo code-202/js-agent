@@ -1,4 +1,4 @@
-import { Request, Method, Status, ProgressListener, StatusListener, AuthorizationService } from './request'
+import { Request, Method, Status, ProgressListener, StatusListener, AuthorizationService, RequestNormalized } from './request'
 import { Response } from './response'
 import { Agent } from './agent'
 import * as superagent from 'superagent'
@@ -301,7 +301,7 @@ export class BasicRequest implements Request {
         }
     }
 
-    public serialize(): Record<string, any> {
+    public normalize(): RequestNormalized {
         return {
             status: this._status,
             responseStatus: this._responseStatus,
@@ -312,7 +312,7 @@ export class BasicRequest implements Request {
         }
     }
 
-    public deserialize(data: Record<string, any>): void {
+    public denormalize(data: RequestNormalized): any {
         try {
             this._status = data.status
             this._responseStatus = data.responseStatus
