@@ -5,7 +5,7 @@ import app from './server'
 
 let server: any
 beforeAll(() => {
-    server = app.listen(3006)
+    server = app.listen(3007)
 })
 afterAll(() => {
     server.close()
@@ -14,7 +14,7 @@ afterAll(() => {
 test('json', () => {
     expect.assertions(3);
 
-    const req = new ApiRequest(':3006/json')
+    const req = new ApiRequest(':3007/json')
 
     const p = req.send().then((res: Response.Response) => {
         expect(res.status).toBe(200)
