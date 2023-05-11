@@ -238,7 +238,9 @@ export class BasicRequest implements Request {
                     }
 
                     this._request = null
-
+                    if (this._responseStatus === 401 && this._authorizationService) {
+                        this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus)
+                    }
                     this.changeStatus('error')
                     reject(this.buildResponse())
                 })

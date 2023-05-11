@@ -194,6 +194,9 @@ class BasicRequest {
                     this._responseData = err.response.body;
                 }
                 this._request = null;
+                if (this._responseStatus === 401 && this._authorizationService) {
+                    this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
+                }
                 this.changeStatus('error');
                 reject(this.buildResponse());
             });
