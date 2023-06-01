@@ -169,6 +169,9 @@ class BasicRequest {
                     if (this._responseStatus === 401 && this._authorizationService) {
                         this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
                     }
+                    if (this._responseStatus === 403 && this._authorizationService) {
+                        this._authorizationService.onAccessDeniedError(this._responseStatus, this._responseTextStatus, this._responseData);
+                    }
                     this.changeStatus('error');
                     reject(this.buildResponse());
                     return;
@@ -196,6 +199,9 @@ class BasicRequest {
                 this._request = null;
                 if (this._responseStatus === 401 && this._authorizationService) {
                     this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
+                }
+                if (this._responseStatus === 403 && this._authorizationService) {
+                    this._authorizationService.onAccessDeniedError(this._responseStatus, this._responseTextStatus, this._responseData);
                 }
                 this.changeStatus('error');
                 reject(this.buildResponse());

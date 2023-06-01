@@ -20,6 +20,7 @@ export interface AuthorizationService {
     readonly authorizationToken: string
     readonly authorizationPrefix: string
     onAuthorizationError: (responseStatus: any | null, responseTextStatus: any | null) => void
+    onAccessDeniedError: (responseStatus: any | null, responseTextStatus: any | null, data: any | null) => void
 }
 
 export interface Request extends RequestInformations, Normalizable<RequestNormalized>, Denormalizable<RequestNormalized> {
