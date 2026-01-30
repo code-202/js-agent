@@ -155,7 +155,12 @@ class BasicRequest {
             if (this._settings.headers) {
                 this._request.set(this._settings.headers);
             }
-            this._request.send(this.transformRequestData(this._settings.data));
+            if (this._settings.method == 'GET') {
+                this._request.query(this.transformRequestData(this._settings.data));
+            }
+            else {
+                this._request.send(this.transformRequestData(this._settings.data));
+            }
             this._request.retry(2);
             this._request
                 .then((response) => {

@@ -1,35 +1,35 @@
 {
-  "name": "@code-202/agent",
-  "version": "4.3.0",
-  "main": "build/index.js",
-  "typings": "build/index",
-  "repository": "git@github.com:code-202/js-agent.git",
-  "author": "jngermon <jn.germon@code202.fr>",
-  "license": "MIT",
-  "private": false,
-  "scripts": {
-    "dev": "concurrently -k -n \"Typescript,TSLint\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"esw --watch --ext=.ts,.tsx ./src\"",
-    "build": "tsc",
-    "eslint": "esw --ext=.ts,.tsx ./src",
-    "test": "jest"
-  },
-  "devDependencies": {
-    "@jest/globals": "^29.4.3",
-    "@types/express": "^4.17.17",
-    "@types/superagent": "^4.1.16",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
-    "concurrently": "^7.6.0",
-    "eslint": "^8.34.0",
-    "eslint-watch": "^8.0.0",
-    "express": "^4.18.2",
-    "jest": "^29.4.3",
-    "ts-jest": "^29.0.5",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.5"
-  },
-  "dependencies": {
-    "@code-202/serializer": "^1.0.0",
-    "superagent": "^8.0.9"
-  }
+    "name": "@code-202/agent",
+    "version": "4.4.0",
+    "main": "build/index.js",
+    "typings": "build/index",
+    "repository": "git@github.com:code-202/js-agent.git",
+    "author": "jngermon <jn.germon@code202.fr>",
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+        "dev": "concurrently -k -n \"Typescript,TSLint\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"esw --watch --ext=.ts,.tsx ./src\"",
+        "build": "tsc",
+        "eslint": "esw --ext=.ts,.tsx ./src",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "@jest/globals": "^29.4.3",
+        "@types/express": "^4.17.17",
+        "@types/superagent": "^4.1.16",
+        "@typescript-eslint/eslint-plugin": "^5.52.0",
+        "@typescript-eslint/parser": "^5.52.0",
+        "concurrently": "^7.6.0",
+        "eslint": "^8.34.0",
+        "eslint-watch": "^8.0.0",
+        "express": "^4.18.2",
+        "jest": "^29.4.3",
+        "ts-jest": "^29.0.5",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.9.5"
+    },
+    "dependencies": {
+        "@code-202/serializer": "^1.0.0",
+        "superagent": "^8.0.9"
+    }
 }

@@ -7,14 +7,14 @@ export interface Settings {
     url: string
     method: Method
     data: any
-    headers: {[key: string]: string}
+    headers: { [key: string]: string }
 }
 
 export class BasicRequest implements Request {
     private _request: superagent.SuperAgentRequest | null = null
     protected _settings: Settings
 
-    protected _urlParams: {[key: string]: string} = {}
+    protected _urlParams: { [key: string]: string } = {}
 
     protected _responseStatus: number | null = null
     protected _responseTextStatus: any = ''
@@ -29,7 +29,7 @@ export class BasicRequest implements Request {
 
     protected _authorizationService: AuthorizationService | null = null
 
-    constructor (url: string, method: Method = 'GET') {
+    constructor(url: string, method: Method = 'GET') {
 
         this._settings = {
             url: url,
@@ -39,11 +39,11 @@ export class BasicRequest implements Request {
         }
     }
 
-    get status (): Status {
+    get status(): Status {
         return this._status
     }
 
-    get errors () {
+    get errors() {
         if (this._status !== 'error') {
             return []
         }
@@ -59,62 +59,62 @@ export class BasicRequest implements Request {
         return [message]
     }
 
-    get responseStatus () {
+    get responseStatus() {
         return this._responseStatus
     }
 
-    get responseTextStatus () {
+    get responseTextStatus() {
         return this._responseTextStatus
     }
 
-    get responseData () {
+    get responseData() {
         return this._responseData
     }
 
-    get progress () {
+    get progress() {
         return this._progress
     }
 
-    get uploadProgress () {
+    get uploadProgress() {
         return this._uploadProgress
     }
 
-    addHeader (key: string, value: string): this {
+    addHeader(key: string, value: string): this {
         this._settings.headers[key] = value
 
         return this
     }
 
-    addAuthorization (token: string, prefix: string = 'Bearer'): this {
+    addAuthorization(token: string, prefix: string = 'Bearer'): this {
         this._settings.headers['Authorization'] = prefix + ' ' + token
 
         return this
     }
 
-    addAuthorizationService (service: AuthorizationService | null): this {
+    addAuthorizationService(service: AuthorizationService | null): this {
         this._authorizationService = service
         return this
     }
 
-    setUrlParam (key: string, value: string): this {
+    setUrlParam(key: string, value: string): this {
         this._urlParams[key] = value
 
         return this
     }
 
-    onProgress (listener: ProgressListener): this {
+    onProgress(listener: ProgressListener): this {
         this._progressListeners.push(listener)
 
         return this
     }
 
-    onStatusChange (listener: StatusListener): this {
+    onStatusChange(listener: StatusListener): this {
         this._statusListeners.push(listener)
 
         return this
     }
 
-    reset () {
+    reset() {
         if (this._status !== 'pending') {
             this.changeStatus('waiting')
         }
@@ -122,7 +122,7 @@ export class BasicRequest implements Request {
         return this
     }
 
-    abort () {
+    abort() {
         if (this._request) {
             this._request.abort()
         }
@@ -130,7 +130,7 @@ export class BasicRequest implements Request {
         return this
     }
 
-    send (data?: any): Promise<Response> {
+    send(data?: any): Promise<Response> {
         this._settings.data = data
 
         this.abort()
@@ -186,7 +186,11 @@ export class BasicRequest implements Request {
                 this._request.set(this._settings.headers)
             }
 
-            this._request.send(this.transformRequestData(this._settings.data))
+            if (this._settings.method == 'GET') {
+                this._request.query(this.transformRequestData(this._settings.data))
+            } else {
+                this._request.send(this.transformRequestData(this._settings.data))
+            }
 
             this._request.retry(2)
 
@@ -256,15 +260,15 @@ export class BasicRequest implements Request {
         return p
     }
 
-    protected transformRequestData (data?: any): any {
+    protected transformRequestData(data?: any): any {
         return data !== undefined ? data : null
     }
 
-    protected transformResponseData (data: any): Promise<any> {
+    protected transformResponseData(data: any): Promise<any> {
         return new Promise<any>((resolve) => resolve(data))
     }
 
-    protected buildResponse (): Response {
+    protected buildResponse(): Response {
         return {
             status: this._responseStatus ? this._responseStatus : 500,
             textStatus: this._responseTextStatus,
@@ -272,7 +276,7 @@ export class BasicRequest implements Request {
         }
     }
 
-    protected changeProgression (progress: number) {
+    protected changeProgression(progress: number) {
         if (progress === this._progress) {
             return
         }
@@ -284,7 +288,7 @@ export class BasicRequest implements Request {
         }
     }
 
-    protected changeUploadProgression (progress: number) {
+    protected changeUploadProgression(progress: number) {
         if (progress === this._uploadProgress) {
             return
         }
@@ -296,7 +300,7 @@ export class BasicRequest implements Request {
         }
     }
 
-    protected changeStatus (status: Status) {
+    protected changeStatus(status: Status) {
         if (status === this._status) {
             return
         }
