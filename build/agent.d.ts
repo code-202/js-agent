@@ -4,3 +4,4 @@ export declare class RequestAgent {
     waitForAll(): Promise<number>;
 }
 export declare const Agent: RequestAgent;
+//# sourceMappingURL=agent.d.ts.map

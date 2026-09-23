@@ -13,7 +13,7 @@ console: ## Launch zsh in docker container with PHP
 		--interactive \
 		--tty \
 		--rm \
-		code202/node:18.12 \
+		code202/node:22.23 \
 		/bin/login -p -f $(shell whoami)
 
 test:

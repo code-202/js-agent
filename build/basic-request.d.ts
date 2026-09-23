@@ -49,3 +49,4 @@ export declare class BasicRequest implements Request {
     normalize(): RequestNormalized;
     denormalize(data: RequestNormalized): any;
 }
+//# sourceMappingURL=basic-request.d.ts.map

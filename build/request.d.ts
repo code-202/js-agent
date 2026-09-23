@@ -37,3 +37,4 @@ export interface RequestNormalized {
     progress: number;
     uploadProgress: number;
 }
+//# sourceMappingURL=request.d.ts.map

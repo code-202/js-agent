@@ -14,7 +14,7 @@ afterAll(() => {
 test('404', () => {
     expect.assertions(2);
 
-    const req = new BasicRequest(':3006/404')
+    const req = new BasicRequest('localhost:3006/404')
 
     const p = req.send().catch((err: any) => {
         expect(err.status).toBe(404)
@@ -27,7 +27,7 @@ test('404', () => {
 test('500', () => {
     expect.assertions(2);
 
-    const req = new BasicRequest(':3006/500')
+    const req = new BasicRequest('localhost:3006/500')
 
     const p = req.send().catch((err: any) => {
         expect(err.status).toBe(500)
@@ -40,7 +40,7 @@ test('500', () => {
 test('abort', () => {
     expect.assertions(2);
 
-    const req = new BasicRequest(':3006/404')
+    const req = new BasicRequest('localhost:3006/404')
 
     const p = req.send().catch((err: any) => {
         expect(err.status).toBe(500)
@@ -55,7 +55,7 @@ test('abort', () => {
 test('200', () => {
     expect.assertions(2);
 
-    const req = new BasicRequest(':3006/200')
+    const req = new BasicRequest('localhost:3006/200')
 
     const p = req.send().then((res: Response.Response) => {
         expect(res.status).toBe(200)
@@ -68,7 +68,7 @@ test('200', () => {
 test('204', () => {
     expect.assertions(2);
 
-    const req = new BasicRequest(':3006/204')
+    const req = new BasicRequest('localhost:3006/204')
 
     const p = req.send().then((res: Response.Response) => {
         expect(res.status).toBe(204)

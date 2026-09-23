@@ -12,3 +12,4 @@ class ApiRequest extends basic_request_1.BasicRequest {
     }
 }
 exports.ApiRequest = ApiRequest;
+//# sourceMappingURL=api-request.js.map

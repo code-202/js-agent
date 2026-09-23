@@ -14,7 +14,7 @@ afterAll(() => {
 test('json', () => {
     expect.assertions(3);
 
-    const req = new ApiRequest(':3007/json')
+    const req = new ApiRequest('localhost:3007/json')
 
     const p = req.send().then((res: Response.Response) => {
         expect(res.status).toBe(200)

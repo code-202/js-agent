@@ -143,7 +143,7 @@ export class BasicRequest implements Request {
             let url = this._settings.url
 
             for (const key in this._urlParams) {
-                url = url.replace('{' + key + '}', this._urlParams[key])
+                url = url.replace('{' + key + '}', this._urlParams[key] as string)
             }
 
             this._request = superagent.default(this._settings.method || 'GET', url)
